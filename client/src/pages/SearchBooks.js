@@ -5,6 +5,10 @@ import Auth from '../utils/auth';
 import { saveBook, searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
+import { useMutation } from '@apollo/react-hooks';
+import { SAVE_BOOK } from '../utils/mutations';
+import { GET_ME } from '../utils/queries';
+
 const SearchBooks = () => {
   // create state for holding returned google api data
   const [searchedBooks, setSearchedBooks] = useState([]);
@@ -66,6 +70,18 @@ const SearchBooks = () => {
 
     try {
       const response = await saveBook(bookToSave, token);
+      //new
+      await saveBook({
+        variables: {book: bookToSave},
+        update: cache => {
+          const {me} = cache.readQuery({ query: GET_ME });
+          // console.log(me)
+          // console.log(me.savedBooks)
+          cache.writeQuery({ query: GET_ME , data: {me: { ...me, savedBooks: [...me.savedBooks, bookToSave] } } })
+        }
+      });
+
+      
 
       if (!response.ok) {
         throw new Error('something went wrong!');
