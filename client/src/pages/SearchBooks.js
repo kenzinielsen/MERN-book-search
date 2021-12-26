@@ -67,17 +67,21 @@ const SearchBooks = () => {
       return false;
     }
 
-    //try { 
-      console.log(searchInput)
-      const {data} = await saveBook({
-        variables: {bookData: searchInput}
+    try { 
+      //console.log(searchInput)
+      const response = await saveBook({
+        variables: {input: bookToSave}
+        // update: cache => {
+        //   const {me} = cache.readQuery({ query: GET_ME });
+        //   cache.writeQuery({ query: GET_ME, data: { ...me, saveBooks: [ ...me.savedBooks, bookToSave ]}})
+        // }
       });
 
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-    // } catch (err) {
-    //   console.error(err);
-    // }
+     } catch (err) {
+       console.error(err);
+     }
   };
 
   return (
