@@ -28,6 +28,7 @@ const SavedBooks = () => {
         setUserData(user);
       } catch (err) {
         console.error(err);
+    
       }
     };
 
